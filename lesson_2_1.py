@@ -1,4 +1,4 @@
-
+import json
 def get_cookbook_from_file():
         with open('cookbook.txt', 'r') as cookbook:
                 cookbook_copy = {}
@@ -17,6 +17,10 @@ def get_cookbook_from_file():
                         else:
                             break
                 return cookbook_copy
+
+def create_cookbook_json():
+    with open('cookbook.json', 'w') as cookbook_json:
+        json.dump(get_cookbook_from_file(), cookbook_json)
 
 def get_shop_list_by_dishes(dishes, person_count):
     shop_list = {}
@@ -42,4 +46,4 @@ def create_shop_list():
     shop_list = get_shop_list_by_dishes(dishes, person_count)
     print_shop_list(shop_list)
 
-create_shop_list()
+create_cookbook_json()
