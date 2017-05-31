@@ -46,4 +46,4 @@ def create_shop_list():
     shop_list = get_shop_list_by_dishes(dishes, person_count)
     print_shop_list(shop_list)
 
-create_cookbook_json()
+create_shop_list()
