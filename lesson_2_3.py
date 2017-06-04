@@ -4,15 +4,6 @@ import chardet
 
 list_of_files = ['newsafr.json', 'newscy.json', 'newsfr.json', 'newsit.json']
 
-def get_encodings_chart():
-        encodings_chart = {}
-        for file in list_of_files:
-                with open(file, 'rb') as f:
-                    data = f.read()
-                    result = chardet.detect(data)
-                    encodings_chart[file] = result['encoding']
-        return(encodings_chart)
-
 def get_clean_description_list(raw_list):
         description_list = []
         for word in raw_list:
@@ -39,70 +30,29 @@ def print_top_words(random_list_of_counts, random_chart):
                     else:
                         break
 
-def get_top_words_from_newsit():
-        with open('newsit.json', encoding=get_encodings_chart()['newsit.json']) as f:
+def get_top_words_from_file(filename):
+        with open(filename, 'rb') as f:
                 chart = {}
-
-                data = json.load(f)
+                text = f.read()
+                json_text = text.decode(chardet.detect(text)['encoding'])
+                data = json.loads(json_text)
                 for i in data['rss']['channel']['item']:
-                        description_list_raw = i['description'].split()
+                        if filename == 'newsit.json':
+                                description_list_raw = i['description'].split()
+                        else:
+                                description_list_raw = i['description']['__cdata'].split()
                         for word in get_clean_description_list(description_list_raw):
                                 if len(word) > 6 and word.isalpha():
                                         if word not in chart:
                                                 chart[word] = 1
                                         else:
                                                 chart[word] += 1
-        print('newsit.json')
+        print(filename)
         print_top_words(get_list_of_counts_from_chart(chart), chart)
 
-def get_top_words_from_newsafr():
-    with open('newsafr.json', encoding=get_encodings_chart()['newsafr.json']) as f:
-        chart = {}
-        data = json.load(f)
-        for i in data['rss']['channel']['item']:
-            description_list_raw = i['description']['__cdata'].split()
-            for word in get_clean_description_list(description_list_raw):
-                if len(word) > 6 and word.isalpha():
-                    if word not in chart:
-                        chart[word] = 1
-                    else:
-                        chart[word] += 1
-    print('newsafr.json')
-    print_top_words(get_list_of_counts_from_chart(chart), chart)
+for file in list_of_files:
+        get_top_words_from_file(file)
 
-def get_top_words_from_newsfr():
-    with open('newsfr.json', encoding=get_encodings_chart()['newsfr.json']) as f:
-        chart = {}
-        data = json.load(f)
-        for i in data['rss']['channel']['item']:
-            description_list_raw = i['description']['__cdata'].split()
-            for word in get_clean_description_list(description_list_raw):
-                if len(word) > 6 and word.isalpha():
-                    if word not in chart:
-                        chart[word] = 1
-                    else:
-                        chart[word] += 1
-    print('newsfr.json')
-    print_top_words(get_list_of_counts_from_chart(chart), chart)
 
-def get_top_words_from_newscy():
-    with open('newscy.json', encoding=get_encodings_chart()['newscy.json']) as f:
-        chart = {}
-        data = json.load(f)
-        for i in data['rss']['channel']['item']:
-            description_list_raw = i['description']['__cdata'].split()
-            for word in get_clean_description_list(description_list_raw):
-                if len(word) > 6 and word.isalpha():
-                    if word not in chart:
-                        chart[word] = 1
-                    else:
-                        chart[word] += 1
-    print('newscy.json')
-    print_top_words(get_list_of_counts_from_chart(chart), chart)
-
-get_top_words_from_newsit()
-get_top_words_from_newsfr()
-get_top_words_from_newsafr()
-get_top_words_from_newscy()
 
 
