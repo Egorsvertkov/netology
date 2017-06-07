@@ -1,22 +1,22 @@
 import json
 def get_cookbook_from_file():
-        with open('cookbook.txt', 'r') as cookbook:
-                cookbook_copy = {}
-                while True:
-                        dish_name = cookbook.readline().lower().strip()
-                        if dish_name:
-                                cookbook_copy[dish_name] = []
-                                count_of_ingridients = int(cookbook.readline())
-                                for i in range(count_of_ingridients):
-                                    ingridient = {}
-                                    temp_ingridient = cookbook.readline().split(' | ')
-                                    ingridient['название_ингредиента'] = temp_ingridient[0].strip()
-                                    ingridient['количество'] = int(temp_ingridient[1].strip())
-                                    ingridient['ед_измерения'] = temp_ingridient[2].strip()
-                                    cookbook_copy[dish_name].append(ingridient)
-                        else:
-                            break
-                return cookbook_copy
+    with open('cookbook.txt', 'r') as cookbook_file:
+        cookbook = {}
+        while True:
+            dish_name = cookbook_file.readline().lower().strip()
+            if dish_name:
+                cookbook[dish_name] = []
+                count_of_ingridients = int(cookbook_file.readline())
+                for i in range(count_of_ingridients):
+                    ingridient = {}
+                    temp_ingridient = cookbook_file.readline().split(' | ')
+                    ingridient['название_ингредиента'] = temp_ingridient[0].strip()
+                    ingridient['количество'] = int(temp_ingridient[1].strip())
+                    ingridient['ед_измерения'] = temp_ingridient[2].strip()
+                    cookbook[dish_name].append(ingridient)
+            else:
+                break
+        return cookbook
 
 def create_cookbook_json():
     with open('cookbook.json', 'w') as cookbook_json:
@@ -24,8 +24,9 @@ def create_cookbook_json():
 
 def get_shop_list_by_dishes(dishes, person_count):
     shop_list = {}
+    cookbook = get_cookbook_from_file()
     for dish in dishes:
-        for ingridient in get_cookbook_from_file()[dish]:
+        for ingridient in cookbook[dish]:
             new_shop_list_item = dict(ingridient)
             new_shop_list_item['количество'] *= person_count
             if new_shop_list_item['название_ингредиента'] not in shop_list:
@@ -45,5 +46,6 @@ def create_shop_list():
     dishes = input('Введите блюда в расчете на одного человека (через запятую): ').lower().split(', ')
     shop_list = get_shop_list_by_dishes(dishes, person_count)
     print_shop_list(shop_list)
+
 
 create_shop_list()
