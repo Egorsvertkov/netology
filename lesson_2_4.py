@@ -71,6 +71,6 @@ def search(files):
 
 migrations = 'Migrations'
 files = glob.glob(os.path.join(migrations, "*.sql"))
-search(files)
-
+print(os.path.join(migrations, "*.sql"))
+print(files)
 
